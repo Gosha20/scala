@@ -2,9 +2,9 @@ import atto._
 import Atto._
 import cats.implicits._
 import DateTime._
-object ParseCommand {
+object ParseCommands {
 
-  def fixed(n:Int): Parser[Int] =
+  def getFixedIntAmount(n:Int): Parser[Int] =
     count(n, digit).map(_.mkString).flatMap { s =>
       try ok(s.toInt) catch { case e: NumberFormatException => err(e.toString) }
     }
@@ -16,10 +16,10 @@ object ParseCommand {
     takeWhile(c => c == ' ').void
 
   val date: Parser[Date] =
-    (fixed(4) <~ char('-'), fixed(2) <~ char('-'), fixed(2)).mapN(Date.apply)
+    (getFixedIntAmount(4) <~ char('-'), getFixedIntAmount(2) <~ char('-'), getFixedIntAmount(2)).mapN(Date.apply)
 
   val time: Parser[Time] =
-    (fixed(2) <~ char(':'), fixed(2) <~ char(':'), fixed(2)).mapN(Time.apply)
+    (getFixedIntAmount(2) <~ char(':'), getFixedIntAmount(2) <~ char(':'), getFixedIntAmount(2)).mapN(Time.apply)
 
   val dateTime: Parser[DateTime] =
     (date <~ spaceChar, time).mapN(DateTime.apply) | endOfInput.map(_ => DateTime.emptyTime)
@@ -32,23 +32,22 @@ object ParseCommand {
     booleanString("yes", "no") <~ whitespaces,
     booleanString("afterstop", "continuous", false) <~ whitespaces,
     dateTime <~ whitespaces,
-    dateTime).mapN(Commands.CreatePoll.apply)
+    dateTime).mapN(PollCommands.CreatePoll.apply)
 
   val list: Parser[Command] =
-    stringCI("/list").map(_=>Commands.List.apply())
+    stringCI("/list").map(_=>PollCommands.ToList.apply())
 
   val deletePoll: Parser[Command] =
-    (stringCI("/delete_poll ") ~> int) map Commands.DeletePoll.apply
+    (stringCI("/delete_poll ") ~> int) map PollCommands.DeletePoll.apply
 
   val startPoll:Parser[Command] =
-    (stringCI("/start_poll ") ~> int) map Commands.StartPoll.apply
+    (stringCI("/start_poll ") ~> int) map PollCommands.StartPoll.apply
 
   val stopPoll:Parser[Command] =
-    (stringCI("/stop_poll ") ~> int) map Commands.StopPoll.apply
-
-
+    (stringCI("/stop_poll ") ~> int) map PollCommands.StopPoll.apply
+  
   val result:Parser[Command] =
-    (stringCI("/result ") ~> int) map Commands.Result.apply
+    (stringCI("/result ") ~> int) map PollCommands.GetResults.apply
 
   val command : Parser[Command] = choice(createPoll, list, deletePoll, startPoll,stopPoll, result)
 
