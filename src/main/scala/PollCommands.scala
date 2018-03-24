@@ -7,7 +7,7 @@ object PollCommands {
                          startTime: DateTime,
                          endTime: DateTime) extends Command {
     override def perform(): String = {
-      val pollId = PollsMap.polls.size
+      val pollId = pollTitle.hashCode
       polls +=  pollId -> new Poll(pollTitle,isAnon,resShown,startTime,endTime,pollId)
       pollId.toString
     }
