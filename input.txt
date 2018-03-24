@@ -1,7 +1,5 @@
 /create_poll SOmeNAME
+/create_poll SOmeNAME
 /list
-/delete_poll 123
-/start_poll 123241
-/stop_poll 123241
-/start_poll 123241
-/result 123445678
+/delete_poll 345678
+/list
