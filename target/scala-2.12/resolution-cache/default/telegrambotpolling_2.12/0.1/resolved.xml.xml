@@ -4,7 +4,7 @@
 		module="telegrambotpolling_2.12"
 		revision="0.1"
 		status="integration"
-		publication="20180322190359"
+		publication="20180324155411"
 	>
 		<description>
 		TelegramBotPolling

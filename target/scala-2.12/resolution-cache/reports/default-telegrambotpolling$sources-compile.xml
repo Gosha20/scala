@@ -7,7 +7,7 @@
 		revision="0.1"
 		conf="compile"
 		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, pom, scala-tool"
-		date="20180322190400"/>
+		date="20180324155412"/>
 	<dependencies>
 		<module organisation="org.tpolecat" name="atto-core_2.12">
 			<revision name="0.6.2-M1" status="release" pubdate="20180125035325" resolver="sbt-chain" artresolver="sbt-chain" homepage="https://github.com/tpolecat/atto" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="6">

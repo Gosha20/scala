@@ -1140,17 +1140,33 @@
 [debug] == resolving dependencies default#telegrambotpolling$sources;0.1->org.scala-lang#scala-compiler;2.12.5 [scala-tool->master]
 [debug] 	resolved ivy file produced in cache
 [debug] :: downloading artifacts ::
-[debug] 	[NOT REQUIRED] org.scala-lang.modules#scala-xml_2.12;1.0.6!scala-xml_2.12.jar(src)
-[debug] 	[NOT REQUIRED] org.scala-lang#scala-reflect;2.12.5!scala-reflect.jar(src)
-[debug] 	[NOT REQUIRED] org.scala-lang#scala-library;2.12.5!scala-library.jar(src)
-[debug] 	[NOT REQUIRED] org.typelevel#cats-macros_2.12;1.0.0!cats-macros_2.12.jar(src)
-[debug] 	[NOT REQUIRED] org.tpolecat#atto-core_2.12;0.6.2-M1!atto-core_2.12.jar(src)
 [debug] 	[NOT REQUIRED] org.typelevel#cats-kernel_2.12;1.0.0!cats-kernel_2.12.jar(src)
-[debug] 	[NOT REQUIRED] org.typelevel#machinist_2.12;0.6.2!machinist_2.12.jar(src)
-[debug] 	[NOT REQUIRED] org.scala-lang#scala-compiler;2.12.5!scala-compiler.jar(src)
+[debug] 	[NOT REQUIRED] org.tpolecat#atto-core_2.12;0.6.2-M1!atto-core_2.12.jar(src)
+[debug] 	[NOT REQUIRED] org.scala-lang#scala-reflect;2.12.5!scala-reflect.jar(src)
+[debug] 	[NOT REQUIRED] org.scala-lang.modules#scala-xml_2.12;1.0.6!scala-xml_2.12.jar(src)
+[debug] no default ivy user dir defined: set to C:\Users\gosha\.ivy2
 [debug] 	[NOT REQUIRED] jline#jline;2.14.5!jline.jar(src)
+[debug] including url: jar:file:/C:/Users/gosha/.sbt/boot/scala-2.12.4/org.scala-sbt/sbt/1.1.1/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-public.xml
+[debug] 	[NOT REQUIRED] org.scala-lang#scala-compiler;2.12.5!scala-compiler.jar(src)
+[debug] no default cache defined: set to C:\Users\gosha\.ivy2\cache
+[debug] including url: jar:file:/C:/Users/gosha/.sbt/boot/scala-2.12.4/org.scala-sbt/sbt/1.1.1/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-shared.xml
 [debug] 	[NOT REQUIRED] org.typelevel#cats-core_2.12;1.0.0!cats-core_2.12.jar(src)
-[debug] :: resolution report :: resolve 179ms :: artifacts dl 10ms
+[debug] 	[NOT REQUIRED] org.typelevel#cats-macros_2.12;1.0.0!cats-macros_2.12.jar(src)
+[debug] 	[NOT REQUIRED] org.scala-lang#scala-library;2.12.5!scala-library.jar(src)
+[debug] 	[NOT REQUIRED] org.typelevel#machinist_2.12;0.6.2!machinist_2.12.jar(src)
+[debug] including url: jar:file:/C:/Users/gosha/.sbt/boot/scala-2.12.4/org.scala-sbt/sbt/1.1.1/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-local.xml
+[debug] including url: jar:file:/C:/Users/gosha/.sbt/boot/scala-2.12.4/org.scala-sbt/sbt/1.1.1/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-main-chain.xml
+[debug] including url: jar:file:/C:/Users/gosha/.sbt/boot/scala-2.12.4/org.scala-sbt/sbt/1.1.1/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-default-chain.xml
+[debug] settings loaded (24ms)
+[debug] 	default cache: C:\Users\gosha\.ivy2\cache
+[debug] 	default resolver: default
+[debug] 	-- 5 resolvers:
+[debug] 	shared [file]
+[debug] 	default [chain] [local, main]
+[debug] 	public [ibiblio]
+[debug] 	main [chain] [shared, public]
+[debug] 	local [file]
+[debug] :: resolution report :: resolve 97ms :: artifacts dl 38ms
 [debug] 	report for default#telegrambotpolling$sources;0.1 compile produced in C:\Users\gosha\Desktop\projects\TelegramBotPolling\target\scala-2.12\resolution-cache\reports\default-telegrambotpolling$sources-compile.xml
 [debug] 	report for default#telegrambotpolling$sources;0.1 runtime produced in C:\Users\gosha\Desktop\projects\TelegramBotPolling\target\scala-2.12\resolution-cache\reports\default-telegrambotpolling$sources-runtime.xml
 [debug] 	report for default#telegrambotpolling$sources;0.1 test produced in C:\Users\gosha\Desktop\projects\TelegramBotPolling\target\scala-2.12\resolution-cache\reports\default-telegrambotpolling$sources-test.xml
@@ -1162,4 +1178,4 @@
 [debug] 	report for default#telegrambotpolling$sources;0.1 plugin produced in C:\Users\gosha\Desktop\projects\TelegramBotPolling\target\scala-2.12\resolution-cache\reports\default-telegrambotpolling$sources-plugin.xml
 [debug] 	report for default#telegrambotpolling$sources;0.1 pom produced in C:\Users\gosha\Desktop\projects\TelegramBotPolling\target\scala-2.12\resolution-cache\reports\default-telegrambotpolling$sources-pom.xml
 [debug] 	report for default#telegrambotpolling$sources;0.1 scala-tool produced in C:\Users\gosha\Desktop\projects\TelegramBotPolling\target\scala-2.12\resolution-cache\reports\default-telegrambotpolling$sources-scala-tool.xml
-[debug] 	resolve done (179ms resolve - 10ms download)
+[debug] 	resolve done (97ms resolve - 38ms download)
