@@ -1,3 +1,3 @@
 trait Command {
-  def execute() : String
+  def perform() : String
 }

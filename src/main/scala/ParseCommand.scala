@@ -54,7 +54,7 @@ object ParseCommand {
 
   def parseLine(string : String) : String = {
     command.parseOnly(string).option match {
-      case Some(cmd) => cmd.execute()
+      case Some(cmd) => cmd.perform()
       case None => "Wrong command"
     }
   }

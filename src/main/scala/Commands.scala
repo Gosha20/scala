@@ -6,7 +6,7 @@ object Commands {
                          resShow : Boolean,
                          startTime: DateTime,
                          endTime: DateTime) extends Command {
-    override def execute(): String = {
+    override def perform(): String = {
       val id = PollsMap.polls.size
       polls +=  id -> new Poll(name,anon,resShow,startTime,endTime,id)
       id.toString
@@ -15,13 +15,13 @@ object Commands {
 
 
   case class List() extends Command {
-    override def execute(): String = {
+    override def perform(): String = {
       polls.toString()
     }
   }
 
   case class DeletePoll(id : Int)extends Command{
-    override def execute(): String = {
+    override def perform(): String = {
         PollsMap.polls.getOrElse(id, return "no id")
         PollsMap.polls -= id
         s"delete id:$id"
@@ -30,7 +30,7 @@ object Commands {
   }
 
   case class StartPoll(id : Int)extends Command{
-    override def execute(): String = {
+    override def perform(): String = {
       val poll = PollsMap.polls.getOrElse(id, return "no id")
       poll.start()
       "started"
@@ -38,14 +38,14 @@ object Commands {
   }
 
   case class StopPoll(id : Int)extends Command{
-    override def execute(): String = {
+    override def perform(): String = {
       PollsMap.polls(id).start()
       "stoped"
     }
   }
 
   case class Result(id : Int)extends Command{
-    override def execute(): String = {
+    override def perform(): String = {
       val poll = PollsMap.polls.getOrElse(id, return "no id")
       poll.toString()
     }
