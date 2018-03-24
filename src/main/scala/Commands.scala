@@ -22,24 +22,33 @@ object Commands {
 
   case class DeletePoll(id : Int)extends Command{
     override def execute(): String = {
-      if (PollsMap.polls.contains(id)){
+        PollsMap.polls.getOrElse(id, return "no id")
         PollsMap.polls -= id
         s"delete id:$id"
-      }
-      "id is not exist"
+
     }
   }
 
   case class StartPoll(id : Int)extends Command{
-    override def execute(): String = "start poll " + id
+    override def execute(): String = {
+      val poll = PollsMap.polls.getOrElse(id, return "no id")
+      poll.start()
+      "started"
+    }
   }
 
   case class StopPoll(id : Int)extends Command{
-    override def execute(): String = "stop poll " + id
+    override def execute(): String = {
+      PollsMap.polls(id).start()
+      "stoped"
+    }
   }
 
   case class Result(id : Int)extends Command{
-    override def execute(): String = "result " + id
+    override def execute(): String = {
+      val poll = PollsMap.polls.getOrElse(id, return "no id")
+      poll.toString()
+    }
   }
 
 }

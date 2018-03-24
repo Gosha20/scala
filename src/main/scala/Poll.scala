@@ -3,12 +3,11 @@ class Poll( name : String,
             visibility: Boolean,
             startTime: DateTime,
             endTime: DateTime,
-            id : Int,
-            active: Boolean) {
+            id : Int) {
+  var active = false
+  def start() : Unit = active = true
+  def stop() : Unit = active = false
 
-  def start() : Unit = ???
-  def stop() : Unit = ???
-  
   override def toString: String = {
     s"""
         |Name: $name
@@ -17,6 +16,7 @@ class Poll( name : String,
         |start: $startTime
         |end: $endTime
         |id: $id
+       |started: $active
     """.stripMargin
   }
 }
