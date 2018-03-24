@@ -11,6 +11,9 @@ object Commands {
     }
   }
 
+
+  
+
   case class List() extends Command {
     override def execute(): String = "some list polls"
   }
@@ -26,7 +29,7 @@ object Commands {
   case class StopPoll(id : Int)extends Command{
     override def execute(): String = "stop poll " + id
   }
-  
+
   case class Result(id : Int)extends Command{
     override def execute(): String = "result " + id
   }
