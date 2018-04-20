@@ -1,9 +1,12 @@
+import java.lang.Character
+
 import atto._
 import Atto._
 import cats.implicits._
-import DateTime._
+
 object ParseCommands {
 
+  Parser
   def getFixedIntAmount(n:Int): Parser[Int] =
     count(n, digit).map(_.mkString).flatMap { s =>
       try ok(s.toInt) catch { case e: NumberFormatException => err(e.toString) }
@@ -25,7 +28,8 @@ object ParseCommands {
     (date <~ spaceChar, time).mapN(DateTime.apply) | endOfInput.map(_ => DateTime.emptyTime)
 
   val word: Parser[String] =
-    takeWhile(c => c != ' ').map(s => s.toLowerCase)
+    takeWhile(c => c != ' ').map(s => s)
+  // should be changed to normal code with digit check
 
   val createPoll: Parser[Command] =
     (stringCI("/create_poll ") ~> word <~ whitespaces,

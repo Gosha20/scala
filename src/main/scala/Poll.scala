@@ -1,4 +1,4 @@
-class Poll(pollTitle : String,
+final case class Poll(pollTitle : String,
            isAnon : Boolean,
            resultsVisibility: Boolean,
            startTime: DateTime,

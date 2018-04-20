@@ -1,5 +1,5 @@
-import DateTime._
 import PollsMap._
+import Math._
 object PollCommands {
   case class CreatePoll (pollTitle : String,
                          isAnon : Boolean,
@@ -7,7 +7,7 @@ object PollCommands {
                          startTime: DateTime,
                          endTime: DateTime) extends Command {
     override def perform(): String = {
-      val pollId = pollTitle.hashCode
+      val pollId = abs(pollTitle.hashCode)
       polls +=  pollId -> new Poll(pollTitle,isAnon,resShown,startTime,endTime,pollId)
       pollId.toString
     }
@@ -41,7 +41,7 @@ object PollCommands {
 
   case class StopPoll(id : Int)extends Command{
     override def perform(): String = {
-      PollsMap.polls(id).start()
+      PollsMap.polls(id).stop()
       "stoped"
     }
   }
