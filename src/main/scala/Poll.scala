@@ -1,12 +1,11 @@
-final case class Poll(pollTitle : String,
-           isAnon : Boolean,
-           resultsVisibility: Boolean,
-           startTime: DateTime,
-           endTime: DateTime,
-           pollId : Int) {
-  var active = true
-  def start() : Unit = active = true
-  def stop() : Unit = active = false
+case class Poll(pollTitle : String,
+                isAnon : Boolean,
+                resultsVisibility: Boolean,
+                startTime: DateTime,
+                endTime: DateTime,
+                pollId : Int,
+                creator : User,
+                active: Boolean = false) {
 
   override def toString: String = {
     s"""
@@ -17,6 +16,7 @@ final case class Poll(pollTitle : String,
         |Poll End Time: $endTime
         |Poll Id: $pollId
        |Is poll active now?: $active
+       |Creator: $creator
     """.stripMargin
   }
 }
