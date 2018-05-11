@@ -30,7 +30,7 @@ object ParserCommands {
     takeWhile(c => c != ' ').map(s => s)
   // should be changed to normal code with digit check
 
-  val wordForQuestion: Parser[String] = char('<') ~> takeWhile1(c => c != '>')
+  val wordIntoBark: Parser[String] = char('<') ~> takeWhile1(c => c != '>')
 
   val createPoll: Parser[Command] =
     (stringCI("/create_poll ") ~> word <~ whitespaces,
@@ -50,7 +50,7 @@ object ParserCommands {
 
   val stopPoll:Parser[Command] =
     (stringCI("/stop_poll ") ~> int) map CommonCommands.StopPoll.apply
-  
+
   val result:Parser[Command] =
     (stringCI("/result ") ~> int) map CommonCommands.GetResults.apply
 
@@ -70,23 +70,28 @@ object ParserCommands {
       stringCI("multi").map(_ => QuestionTypes.Multi)
 
   val addQuestion:Parser[Command] =
-    (stringCI("/add_question ") ~> wordForQuestion, spaceChar ~>  questionType, many(anyChar)).mapN(
+    (stringCI("/add_question ") ~> wordIntoBark <~ string(">"),
+      whitespaces ~> questionType <~ whitespaces,
+      many(anyChar)).mapN(
       (name, questionType, variantsChars) => {
-        val variants = variantsChars.mkString.split("\n").drop(1).toList
+        val variants = variantsChars.mkString.split("\n").drop(1).toSet
         ContextCommands.AddQuestion(name, questionType, variants)})
 
-  val command : Parser[Command] = choice(createPoll,
-                                          list,
-                                          deletePoll,
-                                          startPoll,
-                                          stopPoll,
-                                          result,
-                                          begin,
-                                          end,
-                                          view,
-                                          addQuestion)
+  val deleteQuestion:Parser[Command] =
+    (stringCI("/delete_question ") ~> int) map ContextCommands.DeleteQuestion.apply
+
+  val answerQuestion:Parser[Command] =
+    (stringCI("/answer ") ~> int,
+      whitespaces ~>wordIntoBark).mapN(ContextCommands.AnswerQuestion.apply)
+
+
+  val command : Parser[Command] = choice(createPoll, list,
+                                          deletePoll, startPoll,
+                                          stopPoll, result,
+                                          begin, end,
+                                          view, addQuestion,
+                                          deleteQuestion, answerQuestion)
 
   def getCommand(strCmd:String) : Option[Command] = command.parseOnly(strCmd).option
-
 
 }
