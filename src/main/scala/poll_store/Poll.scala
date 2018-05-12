@@ -1,3 +1,7 @@
+package poll_store
+
+import user_handler.User
+
 case class Poll(pollTitle : String,
                 isAnon : Boolean,
                 resultsVisibility: Boolean,

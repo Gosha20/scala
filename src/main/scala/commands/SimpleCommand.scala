@@ -1,5 +1,9 @@
-import PollsStore._
-import Math._
+package commands
+
+import java.lang.Math._
+import poll_store._
+import parser.Command
+import user_handler.UserHandler
 object SimpleCommand {
 case class CreatePoll (pollTitle : String,
                        isAnon : Boolean,
@@ -7,28 +11,26 @@ case class CreatePoll (pollTitle : String,
                        startTime: DateTime,
                        endTime: DateTime) extends Command {
     override def perform(userHandler: UserHandler): String = {
-      val pollId = abs(pollTitle.hashCode)
+      val pollId = PollsStore.getMinId(PollsStore.polls)
       val poll = Poll(pollTitle, isAnon, resShown, startTime, endTime, pollId, userHandler.User)
-      PollsStore.addPoll(poll, userHandler.User)
-      pollId.toString
+      PollsStore.addPoll(poll, pollId)
     }
   }
 
-
+//TODO (красивый вывод)
   case class ToList() extends Command {
-    override def perform(userHandler: UserHandler): String=PollsStore.getPollsList
+    override def perform(userHandler: UserHandler): String = PollsStore.getPollsList
   }
 
 
   case class DeletePoll(id : Int)extends Command{
     override def perform(userHandler: UserHandler): String = {
-      val poll = PollsStore.polls.getOrElse(id, return "havent poll with this id")
+      val poll = PollsStore.polls.getOrElse(id, return s"havent poll with this id $id")
       if (poll.creator != userHandler.User) {
         "You cant delete poll, you are not creator"
       }
       else{
         PollsStore.deletePoll(id, userHandler.User)
-        s"delete id:$id"
       }
     }
   }
@@ -37,12 +39,12 @@ case class CreatePoll (pollTitle : String,
   case class StartPoll(id : Int)extends Command{
     override def perform(userHandler: UserHandler): String = {
       val poll = PollsStore.polls.getOrElse(id, return "havent poll with this id")
-      if (poll.creator != userHandler.User) {
-        "You cant start poll, you are not creator"
+      if (poll.creator == userHandler.User && poll.startTime == null) {
+        PollsStore.update(poll.copy(active = true))
+        s"poll with id $id started"
       }
       else {
-        PollsStore.update(poll.copy(active = true))
-        "started"
+        "You cant start poll, you are not creator"
       }
     }
   }
@@ -51,21 +53,24 @@ case class CreatePoll (pollTitle : String,
   case class StopPoll(id : Int)extends Command{
     override def perform(userHandler: UserHandler): String = {
       val poll = PollsStore.polls.getOrElse(id, return "havent poll with this id")
-      if (poll.creator != userHandler.User) {
-        "You cant stop poll, you are not creator"
+      if (poll.creator == userHandler.User && poll.endTime == null ) {
+        PollsStore.update(poll.copy(active = false))
+        s"poll with id $id stopped"
       }
       else {
-        PollsStore.update(poll.copy(active = false))
-        "stoped"
+        "You cant stop poll, you are not creator"
       }
     }
   }
 
-
+//TODO красиво результат голосования
   case class GetResults(id : Int)extends Command{
     override def perform(userHandler: UserHandler): String = {
-      val poll = PollsStore.polls.getOrElse(id, return "no id")
-      poll.toString()
+      val poll = PollsStore.polls.getOrElse(id, return s"havent poll with this id $id")
+      if (!poll.resultsVisibility)
+        PollsStore.pollQuestion(poll).toString()
+      else
+        "only afterstop"
     }
   }
 }

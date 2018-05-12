@@ -1,7 +1,12 @@
-import QuestionTypes.QuestionTypes
+package parser
+
 import atto.Atto._
 import atto._
 import cats.implicits._
+import poll_store._
+import commands._
+import question.QuestionTypes.QuestionTypes
+import question._
 
 object ParserCommands {
 
@@ -82,7 +87,7 @@ object ParserCommands {
 
   val answerQuestion:Parser[Command] =
     (stringCI("/answer ") ~> int,
-      whitespaces ~>wordIntoBark).mapN(ContextCommands.AnswerQuestion.apply)
+      whitespaces ~> wordIntoBark).mapN(ContextCommands.AnswerQuestion.apply)
 
 
   val command : Parser[Command] = choice(createPoll, list,
