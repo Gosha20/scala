@@ -1,6 +1,6 @@
 import PollsStore._
 import Math._
-object CommonCommands {
+object SimpleCommand {
 case class CreatePoll (pollTitle : String,
                        isAnon : Boolean,
                        resShown : Boolean,

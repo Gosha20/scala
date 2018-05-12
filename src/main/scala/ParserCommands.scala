@@ -37,22 +37,22 @@ object ParserCommands {
     booleanString("yes", "no") <~ whitespaces,
     booleanString("afterstop", "continuous", false ) <~ whitespaces,
     dateTime <~ whitespaces,
-    dateTime).mapN(CommonCommands.CreatePoll.apply)
+    dateTime).mapN(SimpleCommand.CreatePoll.apply)
 
   val list: Parser[Command] =
-    stringCI("/list").map(_=>CommonCommands.ToList.apply())
+    stringCI("/list").map(_=>SimpleCommand.ToList.apply())
 
   val deletePoll: Parser[Command] =
-    (stringCI("/delete_poll ") ~> int) map CommonCommands.DeletePoll.apply
+    (stringCI("/delete_poll ") ~> int) map SimpleCommand.DeletePoll.apply
 
   val startPoll:Parser[Command] =
-    (stringCI("/start_poll ") ~> int) map CommonCommands.StartPoll.apply
+    (stringCI("/start_poll ") ~> int) map SimpleCommand.StartPoll.apply
 
   val stopPoll:Parser[Command] =
-    (stringCI("/stop_poll ") ~> int) map CommonCommands.StopPoll.apply
+    (stringCI("/stop_poll ") ~> int) map SimpleCommand.StopPoll.apply
 
   val result:Parser[Command] =
-    (stringCI("/result ") ~> int) map CommonCommands.GetResults.apply
+    (stringCI("/result ") ~> int) map SimpleCommand.GetResults.apply
 
   val begin:Parser[Command] =
     (stringCI("/begin ") ~> int) map ContextCommands.Begin.apply
