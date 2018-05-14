@@ -2,7 +2,8 @@ import org.scalatest.WordSpec
 import org.scalatest.BeforeAndAfter
 import atto._
 import Atto._
-import PollsStore.polls
+import parser.ParserCommands
+import poll_store.{Poll, PollsStore}
 
 import scala.StringContext.InvalidEscapeException
 import scala.collection.immutable.HashMap
@@ -17,7 +18,7 @@ class Tests extends WordSpec with BeforeAndAfter {
     PollsStore.polls = new HashMap[Int, Poll]
   }
 
-  "User" can{
+  "user_handler.User" can{
     "input incorrect command" in{
 
       }
@@ -61,38 +62,38 @@ class Tests extends WordSpec with BeforeAndAfter {
 //    "simply create" in {
 //      val id = ParserCommands.parseLine("/create_poll Simply")
 //      val p = PollsStore.polls(id.toInt)
-//      assert(p == Poll(pollTitle = "Simply", isAnon = true, resultsVisibility = false,
+//      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = true, resultsVisibility = false,
 //                       startTime = null, endTime = null, pollId = id.toInt))
 //    }
 //    "create with non-anon flag" in {
 //      val id = ParserCommands.parseLine("/create_poll Simply no")
 //      val p = PollsStore.polls(id.toInt)
-//      assert(p == Poll(pollTitle = "Simply", isAnon = false, resultsVisibility = false,
+//      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = false, resultsVisibility = false,
 //        startTime = null, endTime = null, pollId = id.toInt))
 //    }
 //    "create with non-anon flag and afterstop results visibility flag" in {
 //      val id = ParserCommands.parseLine("/create_poll Simply no afterstop")
 //      val p = PollsStore.polls(id.toInt)
-//      assert(p == Poll(pollTitle = "Simply", isAnon = false, resultsVisibility = true,
+//      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = false, resultsVisibility = true,
 //        startTime = null, endTime = null, pollId = id.toInt))
 //      //then fix resultsVisibility logic
 //    }
 //    "create with anon and continuous flags" in {
 //      val id = ParserCommands.parseLine("/create_poll Simply yes continuous")
 //      val p = PollsStore.polls(id.toInt)
-//      assert(p == Poll(pollTitle = "Simply", isAnon = true, resultsVisibility = false,
+//      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = true, resultsVisibility = false,
 //        startTime = null, endTime = null, pollId = id.toInt))
 //    }
 //    "create with start time" in {
 //      val id = ParserCommands.parseLine("/create_poll Simply yes continuous 2018-04-21 10:21:31")
 //      val p = PollsStore.polls(id.toInt)
-//      assert(p == Poll(pollTitle = "Simply", isAnon = true, resultsVisibility = false,
+//      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = true, resultsVisibility = false,
 //        startTime = DateTime(Date(2018, 4,21),Time(10,21,31)), endTime = null, pollId = id.toInt))
 //    }
 //    "create with end time" in {
 //      val id = ParserCommands.parseLine("/create_poll Simply yes continuous 2018-04-21 10:21:31 2019-04-21 10:21:31")
 //      val p = PollsStore.polls(id.toInt)
-//      assert(p == Poll(pollTitle = "Simply", isAnon = true, resultsVisibility = false,
+//      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = true, resultsVisibility = false,
 //        startTime = DateTime(Date(2018, 4, 21), Time(10, 21, 31)), endTime = DateTime(Date(2019, 4, 21), Time(10, 21, 31)),
 //        pollId = id.toInt))
 //    }

@@ -1,7 +1,1 @@
-/create_poll SOmeNAME
-/create_poll andry
-/create_poll abefb
-/start_poll 1
-/start_poll 4
-/list
-/result 2
+123
