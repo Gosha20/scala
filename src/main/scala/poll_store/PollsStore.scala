@@ -15,7 +15,7 @@ object PollsStore {
 
   def addPoll(poll : Poll, pollId : Int): String ={
       polls += pollId -> poll
-      s"poll is created with id $pollId"
+      s"Poll was successfully created! ID: $pollId"
   }
 //TODO красивый вывод
   def getPollsList: String = polls.toString()
@@ -24,7 +24,7 @@ object PollsStore {
     val poll = polls(id)
     polls -= id
     pollQuestion -= poll
-    s"poll is deleted id $id"
+    s"Poll was successfully deleted. Deleted poll ID: $id"
   }
 
   def setBeginWork(user: User, poll: Poll): Unit =userWorkWithPoll += (user -> poll)

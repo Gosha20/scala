@@ -10,9 +10,9 @@ import question._
 object ContextCommands {
   case class Begin(id: Int) extends Command {
     override def perform(userHandler: UserHandler): String = {
-      val poll = PollsStore.polls.getOrElse(id, return s"havent poll with this id $id")
+      val poll = PollsStore.polls.getOrElse(id, return s"There is no poll with ID: $id")
       PollsStore.setBeginWork(userHandler.User, poll)
-      s"You worked with poll id $id"
+      s"Context mode is on. You are working with poll $id now"
       }
     }
 
@@ -20,10 +20,10 @@ object ContextCommands {
     override def perform(userHandler: UserHandler): String =
       if (PollsStore.userWorkWithPoll.contains(userHandler.User)){
         PollsStore.setEndWork(userHandler.User)
-        s"You stoped work with poll"
+        s"Context mode is off"
       }
     else{
-        "you i ne nachinal boy"
+        "This command works only in context mode. You should enter it first"
       }
   }
 
@@ -35,45 +35,47 @@ object ContextCommands {
 
   case class AddQuestion(name:String, questionType: QuestionTypes, answers:Set[String]) extends Command {
     override def perform(userHandler: UserHandler): String = {
-      val poll = PollsStore.userWorkWithPoll.getOrElse(userHandler.User, return "vi ne rabotaete s polom")
+      val poll = PollsStore.userWorkWithPoll.getOrElse(userHandler.User,
+        return "This command works only in context mode. You should enter it first")
       if (poll.creator == userHandler.User && !poll.active){
       val question = Question(name, questionType, answers, poll.isAnon)
       val pollQuestion = PollsStore.pollQuestion.getOrElse(poll,HashMap())
       val questionId = PollsStore.getMinId(pollQuestion)
       PollsStore.pollQuestion += (poll -> (pollQuestion + (questionId -> question)))
-      s"done, question id - $questionId"
+      s"Question added to Poll. Question Id - $questionId"
       }else
-        "you cant change, you are not creator"
+        "You can't add question to this poll, you are not poll's creator"
     }
   }
 
   case class DeleteQuestion(idQuestion:Int) extends Command {
     override def perform(userHandler: UserHandler): String = {
-      val poll = PollsStore.userWorkWithPoll.getOrElse(userHandler.User, return "vi ne rabotaete s polom")
+      val poll = PollsStore.userWorkWithPoll.getOrElse(userHandler.User,
+        return "This command works only in context mode. You should enter it first")
       if (poll.creator == userHandler.User && !poll.active){
       val pollQuestion = PollsStore.pollQuestion.getOrElse(poll,HashMap())
       if (pollQuestion.contains(idQuestion)) {
         PollsStore.pollQuestion += (poll -> (pollQuestion - idQuestion))
-        "question is deleted"
+        "Question was deleted"
       }else{
-        s"net voprosa s id $idQuestion"}
+        s"There is no question with number $idQuestion"}
       }else
-        "you cant change, you are not creator"
-
+        "You can't delete the question, you are not poll's creator"
     }
 
   }
 //TODO
   case class AnswerQuestion(questionId:Int, answer: String) extends Command {
     override def perform(userHandler: UserHandler): String = {
-      val poll = PollsStore.userWorkWithPoll.getOrElse(userHandler.User, return "vi ne vibrali vopros")
+      val poll = PollsStore.userWorkWithPoll.getOrElse(userHandler.User,
+        return "This command works only in context mode. You should enter it first")
       if (poll.active){
-          val question : Question = PollsStore.pollQuestion(poll).getOrElse(questionId, return "net takoko question")
+          val question : Question = PollsStore.pollQuestion(poll).getOrElse(questionId,
+            return "No such question with that number")
           if (question.users.contains(userHandler.User)){
-            return "vi uje golosovali"
+            return "You've already voted or answered that question"
           }else {
             question.questionType match {
-
               case QuestionTypes.Choice => {
                 addAnswer(poll,userHandler.User,answer)
               }
@@ -81,7 +83,7 @@ object ContextCommands {
               case QuestionTypes.Multi => {
                 val answerParsed = answer.split(' ')
                 answerParsed.foreach(answer => addAnswer(poll,userHandler.User,answer))
-                return "added "
+                //return "Answer was successfully added!"
               }
 
               case QuestionTypes.Open => {
@@ -89,17 +91,16 @@ object ContextCommands {
               }
             }
           }
-          "something wrong"
+          "Something wrong: Can't define Question type"
       }else
-        "poll not active now, you are so late"
+        "You can't answer questions of finished poll"
     }
 
   def addAnswer(poll:Poll, user : User, answ : String) : String = {
     val newQuestion = PollsStore.pollQuestion(poll)(questionId).addVote(user, answ)
     PollsStore.pollQuestion += (poll -> (PollsStore.pollQuestion(poll) + (questionId -> newQuestion)))
-    "added"
+    "Answer successfully added!"
   }
-
   }
 }
 

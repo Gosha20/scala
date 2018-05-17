@@ -1,0 +1,12 @@
+create_poll - Create poll
+start_poll - Start poll with definite ID
+stop_poll - Stop poll with definite ID
+delete_poll - Delete poll with definite ID
+list - Poll list with IDs
+result - Results of poll with definite ID
+begin - Enter context mode on poll with definite ID
+end - Quit context mode
+view - Poll's info(only in context mode)
+add_question - Add question to poll(only in context mode)
+delete_question - Delete question from poll(only in context mode)
+answer - Answer the question with definite number(only in context mode)

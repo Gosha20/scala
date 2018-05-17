@@ -1,9 +1,10 @@
+input.txt
 #scala
 
 *.class
 *.log
 .tags
-input.txt
+
 
 # sbt
 dist/*

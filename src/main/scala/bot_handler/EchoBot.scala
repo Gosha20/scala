@@ -19,4 +19,3 @@ class EchoBot(val token:String) extends TelegramBot with Polling {
     }
   }
 }
-}

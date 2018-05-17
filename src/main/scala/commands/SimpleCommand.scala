@@ -25,9 +25,9 @@ case class CreatePoll (pollTitle : String,
 
   case class DeletePoll(id : Int)extends Command{
     override def perform(userHandler: UserHandler): String = {
-      val poll = PollsStore.polls.getOrElse(id, return s"havent poll with this id $id")
+      val poll = PollsStore.polls.getOrElse(id, return s"There is no poll with that ID")
       if (poll.creator != userHandler.User) {
-        "You cant delete poll, you are not creator"
+        "You can't delete that poll, you are not poll's creator"
       }
       else{
         PollsStore.deletePoll(id, userHandler.User)
@@ -38,13 +38,13 @@ case class CreatePoll (pollTitle : String,
 
   case class StartPoll(id : Int)extends Command{
     override def perform(userHandler: UserHandler): String = {
-      val poll = PollsStore.polls.getOrElse(id, return "havent poll with this id")
+      val poll = PollsStore.polls.getOrElse(id, return "There is no poll with that ID")
       if (poll.creator == userHandler.User && poll.startTime == null) {
         PollsStore.update(poll.copy(active = true))
-        s"poll with id $id started"
+        s"Poll with ID $id has started"
       }
       else {
-        "You cant start poll, you are not creator"
+        "You can't start poll, you are not poll's creator"
       }
     }
   }
@@ -52,7 +52,7 @@ case class CreatePoll (pollTitle : String,
 
   case class StopPoll(id : Int)extends Command{
     override def perform(userHandler: UserHandler): String = {
-      val poll = PollsStore.polls.getOrElse(id, return "havent poll with this id")
+      val poll = PollsStore.polls.getOrElse(id, return "There is no poll with that ID")
       if (poll.creator == userHandler.User && poll.endTime == null ) {
         PollsStore.update(poll.copy(active = false))
         s"poll with id $id stopped"
@@ -66,11 +66,11 @@ case class CreatePoll (pollTitle : String,
 //TODO красиво результат голосования
   case class GetResults(id : Int)extends Command{
     override def perform(userHandler: UserHandler): String = {
-      val poll = PollsStore.polls.getOrElse(id, return s"havent poll with this id $id")
+      val poll = PollsStore.polls.getOrElse(id, return s"There is no poll with that ID")
       if (!poll.resultsVisibility)
         PollsStore.pollQuestion(poll).toString()
       else
-        "only afterstop"
+        "Results will be shown after poll's finish"
     }
   }
 }

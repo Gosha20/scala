@@ -6,7 +6,7 @@ case class User(name: String) {
       PollsStore.userWorkWithPoll(this).toString
     }
     else{
-      "fail on try view poll"
+      "Failed on view poll attempt"
     }
   }
 }
