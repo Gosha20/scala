@@ -2,24 +2,25 @@ package commands
 
 import java.lang.Math._
 import poll_store._
-import parser.Command
+import java.time.LocalDateTime
+import my_parser.Command
 import user_handler.UserHandler
 object SimpleCommand {
 case class CreatePoll (pollTitle : String,
                        isAnon : Boolean,
                        resShown : Boolean,
-                       startTime: DateTime,
-                       endTime: DateTime) extends Command {
+                       startTime: LocalDateTime,
+                       endTime: LocalDateTime) extends Command {
     override def perform(userHandler: UserHandler): String = {
       val pollId = PollsStore.getMinId(PollsStore.polls)
       val poll = Poll(pollTitle, isAnon, resShown, startTime, endTime, pollId, userHandler.User)
       PollsStore.addPoll(poll, pollId)
+      s"Your poll ID: $pollId"
     }
   }
 
-//TODO (красивый вывод)
   case class ToList() extends Command {
-    override def perform(userHandler: UserHandler): String = PollsStore.getPollsList
+    override def perform(userHandler: UserHandler): String = "Polls:\n" + PollsStore.getPollsList
   }
 
 
@@ -63,11 +64,10 @@ case class CreatePoll (pollTitle : String,
     }
   }
 
-//TODO красиво результат голосования
   case class GetResults(id : Int)extends Command{
     override def perform(userHandler: UserHandler): String = {
       val poll = PollsStore.polls.getOrElse(id, return s"There is no poll with that ID")
-      if (!poll.resultsVisibility)
+      if (!poll.resShown)
         PollsStore.pollQuestion(poll).toString()
       else
         "Results will be shown after poll's finish"

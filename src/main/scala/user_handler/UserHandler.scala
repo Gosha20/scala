@@ -1,6 +1,6 @@
 package user_handler
 
-import parser.{Command, ParserCommands}
+import my_parser.{Command, ParserCommands}
 
 case class UserHandler(User : User) {
 

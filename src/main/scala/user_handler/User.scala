@@ -9,4 +9,6 @@ case class User(name: String) {
       "Failed on view poll attempt"
     }
   }
+
+  override def toString: String = name.toString
 }

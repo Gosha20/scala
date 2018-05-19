@@ -1,4 +1,4 @@
-package parser
+package my_parser
 
 import atto.Atto._
 import atto._
@@ -7,6 +7,7 @@ import poll_store._
 import commands._
 import question.QuestionTypes.QuestionTypes
 import question._
+import java.time._
 
 object ParserCommands {
 
@@ -22,14 +23,14 @@ object ParserCommands {
   val whitespaces : Parser[Unit] =
     takeWhile(c => c == ' ').void
 
-  val date: Parser[Date] =
-    (getFixedIntAmount(4) <~ char('-'), getFixedIntAmount(2) <~ char('-'), getFixedIntAmount(2)).mapN(Date.apply)
+  val date: Parser[LocalDate] =
+    (getFixedIntAmount(4) <~ char('-'), getFixedIntAmount(2) <~ char('-'), getFixedIntAmount(2)).mapN(LocalDate.of)
 
-  val time: Parser[Time] =
-    (getFixedIntAmount(2) <~ char(':'), getFixedIntAmount(2) <~ char(':'), getFixedIntAmount(2)).mapN(Time.apply)
+  val time: Parser[LocalTime] =
+    (getFixedIntAmount(2) <~ char(':'), getFixedIntAmount(2) <~ char(':'), getFixedIntAmount(2)).mapN(LocalTime.of)
 
-  val dateTime: Parser[DateTime] =
-    (date <~ spaceChar, time).mapN(DateTime.apply) | endOfInput.map(_ => DateTime.emptyTime)
+  val dateTime: Parser[LocalDateTime] =
+    (date <~ spaceChar, time).mapN((d, t) => LocalDateTime.of(d, t)) | endOfInput.map(_ => null)
 
   val word: Parser[String] =
     takeWhile(c => c != ' ').map(s => s)
