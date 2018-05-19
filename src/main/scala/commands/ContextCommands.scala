@@ -1,6 +1,6 @@
 package commands
 
-import parser.Command
+import my_parser.Command
 import poll_store._
 import question.QuestionTypes.QuestionTypes
 import user_handler._

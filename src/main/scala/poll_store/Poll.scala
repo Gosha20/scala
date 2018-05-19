@@ -5,6 +5,7 @@ import user_handler.User
 case class Poll(pollTitle : String,
                 isAnon : Boolean,
                 resultsVisibility: Boolean,
+                resShown: Boolean,
                 startTime: LocalDateTime,
                 endTime: LocalDateTime,
                 pollId : Int,
@@ -15,7 +16,7 @@ case class Poll(pollTitle : String,
     s"""
 |Poll Title: $pollTitle
 |Is Anonymous: $isAnon
-|Results visibility: $resultsVisibility
+|Results visibility: $resShown
 |Poll Start Time: $startTime
 |Poll End Time: $endTime
 |Poll Id: $pollId

@@ -17,8 +17,8 @@ object PollsStore {
       polls += pollId -> poll
       s"Poll was successfully created! ID: $pollId"
   }
-//TODO красивый вывод
-  def getPollsList: String = polls.toString()
+
+  def getPollsList: String = polls.values.mkString("\n\n----------\n")
 
   def deletePoll(id : Int, user : User) : String = {
     val poll = polls(id)

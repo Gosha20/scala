@@ -1,4 +1,4 @@
-package parser
+package my_parser
 
 import java.time._
 import atto.Atto._
@@ -8,6 +8,7 @@ import poll_store.Poll, poll_store.PollsStore
 import commands._
 import question.QuestionTypes.QuestionTypes
 import question._
+import java.time._
 
 object ParserCommands {
 
@@ -24,6 +25,7 @@ object ParserCommands {
     takeWhile(c => c == ' ').void
 
   val date: Parser[LocalDate] =
+<<<<<<< HEAD:src/main/scala/parser/ParserCommands.scala
     (getFixedIntAmount(4) <~ char('-'), getFixedIntAmount(2) <~ char('-'), getFixedIntAmount(2)).mapN((y,m,d) => LocalDate.of(y,m,d))
 
   val time: Parser[LocalTime] =
@@ -31,6 +33,15 @@ object ParserCommands {
 
   val dateTime: Parser[LocalDateTime] =
     (date <~ spaceChar, time).mapN((data,time) => LocalDateTime.of(data,time)) | endOfInput.map(_ => null)
+=======
+    (getFixedIntAmount(4) <~ char('-'), getFixedIntAmount(2) <~ char('-'), getFixedIntAmount(2)).mapN(LocalDate.of)
+
+  val time: Parser[LocalTime] =
+    (getFixedIntAmount(2) <~ char(':'), getFixedIntAmount(2) <~ char(':'), getFixedIntAmount(2)).mapN(LocalTime.of)
+
+  val dateTime: Parser[LocalDateTime] =
+    (date <~ spaceChar, time).mapN((d, t) => LocalDateTime.of(d, t)) | endOfInput.map(_ => null)
+>>>>>>> cc2f657916213e6486ea7319791ddc631836a0ad:src/main/scala/my_parser/ParserCommands.scala
 
   val word: Parser[String] =
     takeWhile(c => c != ' ').map(s => s)
