@@ -29,6 +29,13 @@ object PollsStore {
 
   def setBeginWork(user: User, poll: Poll): Unit =userWorkWithPoll += (user -> poll)
   def setEndWork(user: User) : Unit = userWorkWithPoll -= user
-  def update(poll : Poll): Unit = polls += (poll.pollId -> poll)
+  def update(newpoll : Poll): Unit = {
+    val oldquestion = pollQuestion.getOrElse(polls(newpoll.pollId), null)
+    pollQuestion -= polls(newpoll.pollId)
+    polls += (newpoll.pollId -> newpoll)
+    if (oldquestion != null)
+      pollQuestion += (newpoll -> oldquestion)
+  }
+  def checkTime(): Unit = PollsStore.polls.values.foreach(poll => poll.checkTime())
+ }
 
-}

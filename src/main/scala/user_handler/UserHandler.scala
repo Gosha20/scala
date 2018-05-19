@@ -2,7 +2,7 @@ package user_handler
 
 import my_parser.{Command, ParserCommands}
 
-case class UserHandler(User : User) {
+case class UserHandler(user : User) {
 
   def performCommand(stringCmd : String) : String = {
     ParserCommands.getCommand(stringCmd) match {

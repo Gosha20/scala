@@ -10,9 +10,9 @@ import scala.io.Source
 class EchoBot(val token:String) extends TelegramBot with Polling {
 
   override def receiveMessage(msg: Message): Unit = {
-    print(msg)
     for (text <- msg.text) {
-      val user = user_handler.User(msg.source.toString)
+      println(text)
+      val user = user_handler.User(msg.from.get.firstName.toString)
       val userHand = UserHandler(user)
       val cmd = userHand.performCommand(msg.text.get)
       request(SendMessage(msg.source, cmd))

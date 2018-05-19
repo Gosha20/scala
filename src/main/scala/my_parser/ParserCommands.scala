@@ -1,10 +1,9 @@
 package my_parser
 
-import java.time._
 import atto.Atto._
 import atto._
 import cats.implicits._
-import poll_store.Poll, poll_store.PollsStore
+import poll_store._
 import commands._
 import question.QuestionTypes.QuestionTypes
 import question._
@@ -12,28 +11,18 @@ import java.time._
 
 object ParserCommands {
 
-  Parser
   def getFixedIntAmount(n:Int): Parser[Int] =
     count(n, digit).map(_.mkString).flatMap { s =>
       try ok(s.toInt) catch { case e: NumberFormatException => err(e.toString) }
     }
 
-  def booleanString(_true : String, _false : String, empty : Boolean = true):Parser[Boolean]=
+  def booleanString(_false : String, _true : String, empty : Boolean = true):Parser[Boolean]=
     stringCI(_true).map(_ => true) | stringCI(_false).map(_ => false) | endOfInput.map(_=> empty)
 
   val whitespaces : Parser[Unit] =
     takeWhile(c => c == ' ').void
 
   val date: Parser[LocalDate] =
-<<<<<<< HEAD:src/main/scala/parser/ParserCommands.scala
-    (getFixedIntAmount(4) <~ char('-'), getFixedIntAmount(2) <~ char('-'), getFixedIntAmount(2)).mapN((y,m,d) => LocalDate.of(y,m,d))
-
-  val time: Parser[LocalTime] =
-    (getFixedIntAmount(2) <~ char(':'), getFixedIntAmount(2) <~ char(':'), getFixedIntAmount(2)).mapN((h,m,s)=>LocalTime.of(h,m,s))
-
-  val dateTime: Parser[LocalDateTime] =
-    (date <~ spaceChar, time).mapN((data,time) => LocalDateTime.of(data,time)) | endOfInput.map(_ => null)
-=======
     (getFixedIntAmount(4) <~ char('-'), getFixedIntAmount(2) <~ char('-'), getFixedIntAmount(2)).mapN(LocalDate.of)
 
   val time: Parser[LocalTime] =
@@ -41,7 +30,6 @@ object ParserCommands {
 
   val dateTime: Parser[LocalDateTime] =
     (date <~ spaceChar, time).mapN((d, t) => LocalDateTime.of(d, t)) | endOfInput.map(_ => null)
->>>>>>> cc2f657916213e6486ea7319791ddc631836a0ad:src/main/scala/my_parser/ParserCommands.scala
 
   val word: Parser[String] =
     takeWhile(c => c != ' ').map(s => s)
@@ -50,11 +38,11 @@ object ParserCommands {
   val wordIntoBark: Parser[String] = char('<') ~> takeWhile1(c => c != '>')
 
   val createPoll: Parser[Command] =
-    (stringCI("/create_poll ") ~> word <~ whitespaces,
-    booleanString("yes", "no") <~ whitespaces,
-    booleanString("afterstop", "continuous", false ) <~ whitespaces,
-    dateTime <~ whitespaces,
-    dateTime).mapN(SimpleCommand.CreatePoll.apply)
+    (stringCI("/create_poll ") ~> wordIntoBark <~ string(">"),
+      whitespaces ~> booleanString("no", "yes") <~ whitespaces,
+      booleanString("afterstop", "continuous", false ) <~ whitespaces,
+      dateTime <~ whitespaces,
+      dateTime).mapN(SimpleCommand.CreatePoll.apply)
 
   val list: Parser[Command] =
     stringCI("/list").map(_=>SimpleCommand.ToList.apply())
@@ -103,11 +91,11 @@ object ParserCommands {
 
 
   val command : Parser[Command] = choice(createPoll, list,
-                                          deletePoll, startPoll,
-                                          stopPoll, result,
-                                          begin, end,
-                                          view, addQuestion,
-                                          deleteQuestion, answerQuestion)
+    deletePoll, startPoll,
+    stopPoll, result,
+    begin, end,
+    view, addQuestion,
+    deleteQuestion, answerQuestion)
 
   def getCommand(strCmd:String) : Option[Command] = command.parseOnly(strCmd).option
 
