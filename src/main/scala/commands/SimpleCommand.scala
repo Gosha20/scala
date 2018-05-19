@@ -1,6 +1,8 @@
 package commands
 
 import java.lang.Math._
+import java.time.LocalDateTime
+
 import poll_store._
 import parser.Command
 import user_handler.UserHandler
@@ -8,7 +10,7 @@ object SimpleCommand {
 case class CreatePoll (pollTitle : String,
                        isAnon : Boolean,
                        resShown : Boolean,
-                       startTime: DateTime,
+                       startTime: LocalDateTime,
                        endTime: DateTime) extends Command {
     override def perform(userHandler: UserHandler): String = {
       val pollId = PollsStore.getMinId(PollsStore.polls)

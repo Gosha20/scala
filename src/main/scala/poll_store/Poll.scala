@@ -1,12 +1,12 @@
 package poll_store
-
+import java.time._
 import user_handler.User
 
 case class Poll(pollTitle : String,
                 isAnon : Boolean,
                 resultsVisibility: Boolean,
-                startTime: DateTime,
-                endTime: DateTime,
+                startTime: LocalDateTime,
+                endTime: LocalDateTime,
                 pollId : Int,
                 creator : User,
                 active: Boolean = false) {
