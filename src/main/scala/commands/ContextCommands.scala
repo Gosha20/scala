@@ -4,8 +4,11 @@ import my_parser.Command
 import poll_store._
 import question.QuestionTypes.QuestionTypes
 import user_handler._
+
 import scala.collection.immutable.HashMap
 import question._
+
+import scala.util.Try
 
 object ContextCommands {
   case class Begin(id: Int) extends Command {
@@ -27,7 +30,6 @@ object ContextCommands {
       }
   }
 
-//To DO
   case class View() extends Command {
     override def perform(userHandler: UserHandler): String = PollsStore.polls(PollsStore.userWorkWithPoll(userHandler.user).pollId).toString
     }
@@ -58,14 +60,14 @@ object ContextCommands {
           if (pollQuestion.contains(idQuestion)) {
             PollsStore.pollQuestion += (poll -> (pollQuestion - idQuestion))
             "Question was deleted"
-        }else{
-            s"There is no question with number $idQuestion"}
+          }else{
+            s"There is no question with id $idQuestion"}
         }else
             "You can't delete the question, you are not poll's creator"
     }
 
   }
-//TODO
+
   case class AnswerQuestion(questionId:Int, answer: String) extends Command {
     override def perform(userHandler: UserHandler): String = {
       PollsStore.checkTime()
@@ -73,25 +75,35 @@ object ContextCommands {
         return "This command works only in context mode. You should enter it first")
 
       if (poll.active){
-          val question : Question = PollsStore.pollQuestion(poll).getOrElse(questionId, return "No question with that number")
-          if (question.users.contains(userHandler.user)){
-            "You've already voted or answered that question"
-          }else {
-            question.questionType match {
-              case QuestionTypes.Choice => {
-                addAnswer(poll,userHandler.user,answer)
-              }
-              case QuestionTypes.Multi => {
-                val answerParsed = answer.split(' ')
-                answerParsed.foreach(answer => addAnswer(poll,userHandler.user,answer))
-                "Answers added"
-              }
-              case QuestionTypes.Open => {
+        val question = PollsStore.pollQuestion(poll).getOrElse(questionId, return "No question with that number")
+        if (question.users.contains(userHandler.user)){
+          "You've already voted or answered that question"
+        }else {
+          question.questionType match {
+            case QuestionTypes.Choice => {
+              val answerById = getAnswerById(question, answer)
+              if (answerById != "")
                 addAnswer(poll, userHandler.user, answer)
-
+              "wrong answer id"
+            }
+            case QuestionTypes.Multi => {
+              val answerParsed = answer.split(' ')
+              if (answerParsed.distinct.length == answerParsed.length) {
+                answerParsed.foreach(answer =>
+                  {
+                    val answer = getAnswerById(question, answer)
+                    if (answer == "")
+                      return "wrong answer id"
+                  })
+                answerParsed.foreach(answer => addAnswer(poll, userHandler.user, answer) )
               }
+              "you cant choice duplicate answer id"
+            }
+            case QuestionTypes.Open => {
+              addAnswer(poll, userHandler.user, answer)
             }
           }
+        }
       }else
         "You can't answer questions of not started poll"
     }
@@ -101,6 +113,12 @@ object ContextCommands {
     PollsStore.pollQuestion += (poll -> (PollsStore.pollQuestion(poll) + (questionId -> newQuestion)))
     "Answer successfully added!"
   }
+    def getAnswerById(question:Question, idInstr: String) : String = {
+      val id = Try(idInstr.toInt).toOption
+      if (id.isDefined && question.answers.size >= id.get && 1 <= id.get )
+        question.answers(id.get - 1)
+      ""
+    }
   }
 }
 

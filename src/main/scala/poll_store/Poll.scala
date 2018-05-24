@@ -14,33 +14,21 @@ final case class Poll(pollTitle : String,
                 creator : User,
                 active: Boolean = false) {
 
-
+//TODO pls GOD do smf with this shit
   def checkTime() : Unit = {
+    val nowtime = LocalDateTime.now()
     if (startTime != null){
-       if(LocalDateTime.now().isAfter(startTime)) {
-        if (endTime == null)
-          {
-            PollsStore.update(this.copy(active = true))
-          }
-        else
-          {
-            if (LocalDateTime.now().isBefore(endTime))
-            {
-              PollsStore.update(this.copy(active = true))
-            }
-          }
-        }
-    }else {
-      if (endTime!=null){
-        if (LocalDateTime.now().isAfter(endTime))
-        {
-          PollsStore.update(this.copy(active = false))
-        }
-      }
-
+       if(nowtime.isAfter(startTime)) {
+         if (endTime == null)
+           PollsStore.update(this.copy(active = true))
+         if(nowtime.isBefore(endTime))
+           PollsStore.update(this.copy(active = true))
+       }else
+        {PollsStore.update(this.copy(active = false))}
     }
   }
 
+//TODO resShow -> after or cont, not tru false
   override def toString: String = {
     s"""
 |Poll Title: $pollTitle
@@ -50,8 +38,8 @@ final case class Poll(pollTitle : String,
 |Poll End Time: $endTime
 |Poll Id: $pollId
 |Is poll active now?: $active
-|Creator: $creator""".stripMargin
-  }
+|Creator: $creator""".stripMargin  }
+
   def getResult : String = {
         val questions = PollsStore.pollQuestion.getOrElse(this, mutable.HashMap())
         this.toString + "\nQuestions:" + questions.values.mkString("~~~~~~~~~~")

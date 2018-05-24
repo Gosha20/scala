@@ -22,15 +22,18 @@ case class Question(name:String,
       }
       this.copy(votes = newvotes, userVote = newuservote, users = newUsers)
   }
+  //TODO полная шляпа какая-то, нетривиально с votes Amount, сделать более читабельно. будет
+  // ошибка при вопросе типа мулти
+
+
   override def toString: String = {
     val variants = answers.mkString(";")
-    val votesCount = users.size
+    val votesCount = users.size // wtf?
     val variantVotesSet =
-      for(variant <- votes.keys) yield s"'$variant' variant votes: "+
-        votes(variant).toString()
+      for(variant <- votes.keys) yield s"'$variant' variant votes: "+votes(variant).toString
     val variantVotes = variantVotesSet.mkString("\n")
     val participants = if (anonymous){
-      "\nParticipants: Anon"
+      "\nParticipants: Anonymous poll"
     } else {
       "\nParticipants:" + users.mkString(",")
     }
@@ -38,7 +41,7 @@ case class Question(name:String,
        |Question: $name
        |Variants: $variants
        |Question Type: $questionType
-       |Anon: $anonymous
+       |Anonymous: $anonymous
        |Votes Amount: $votesCount $participants
        |$variantVotes
      """.stripMargin

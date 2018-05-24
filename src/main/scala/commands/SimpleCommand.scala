@@ -71,17 +71,20 @@ object SimpleCommand {
     override def perform(userHandler: UserHandler): String = {
       PollsStore.checkTime()
       val poll = PollsStore.polls.getOrElse(id, return s"There is no poll with that ID")
+
       if (poll.resShown)
         return poll.getResult
+
       else{
-        if (!poll.active)
-          if( poll.endTime!=null && LocalDateTime.now().isAfter(poll.endTime))
-          {
-            if( poll.startTime!=null && LocalDateTime.now().isAfter(poll.startTime))
-            {
-                poll.getResult
-            }
+        if (!poll.active){
+          if (poll.startTime == null)
+            poll.getResult
+          else{
+            if (LocalDateTime.now().isAfter(poll.startTime))
+              poll.getResult
           }
+        }
+
       }
         "Results will be shown after poll's finish"
     }

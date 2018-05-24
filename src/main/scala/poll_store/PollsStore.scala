@@ -27,8 +27,10 @@ object PollsStore {
     s"Poll was successfully deleted. Deleted poll ID: $id"
   }
 
-  def setBeginWork(user: User, poll: Poll): Unit =userWorkWithPoll += (user -> poll)
+  def setBeginWork(user: User, poll: Poll): Unit = userWorkWithPoll += (user -> poll)
+
   def setEndWork(user: User) : Unit = userWorkWithPoll -= user
+
   def update(newpoll : Poll): Unit = {
     val oldquestion = pollQuestion.getOrElse(polls(newpoll.pollId), null)
     pollQuestion -= polls(newpoll.pollId)
