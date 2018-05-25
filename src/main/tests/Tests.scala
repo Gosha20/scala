@@ -23,6 +23,15 @@ class Tests extends WordSpec with BeforeAndAfter {
   private def getIdInString(string: String): Int =
     string.filter(_.isDigit).toInt
 
+  private def getDoubleValue(value: Int): String =
+    if (value < 10){
+      "0"+value.toString
+    } else{value.toString}
+
+  private def getTimeInCurFormat(time: LocalDateTime): String =
+    s"${time.getYear}-${getDoubleValue(time.getMonthValue)}-${getDoubleValue(time.getDayOfMonth)} " +
+      s"${getDoubleValue(time.getHour)}:${getDoubleValue(time.getMinute)}:${getDoubleValue(time.getSecond)}"
+
   private val unknownCommand: String = "Wrong command"
   private val noPollWithID: String = "There is no poll with that ID"
 
@@ -30,7 +39,7 @@ class Tests extends WordSpec with BeforeAndAfter {
     PollsStore.polls = new HashMap[Int, Poll]
   }
 
-  "user_handler.User" can {
+  "UserHandler" can {
     "input incorrect command" in {
       assert(executor.performCommand("/crtpoll qwe") == unknownCommand)
       assert(executor.performCommand("/lst") == unknownCommand)
@@ -98,6 +107,43 @@ class Tests extends WordSpec with BeforeAndAfter {
       assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = true, resShown = "continuous",
         startTime = LocalDateTime.of(2018, 4, 21, 10, 21, 31), endTime = LocalDateTime.of(2019, 4, 21, 10, 21, 31),
         pollId = id, creator = user))
+    }
+    "not create with wrong start time" in {
+      assert(executor.performCommand("/create_poll <Test> yes continuous 2018-04-21 99:99:99") == unknownCommand)
+    }
+    "not create with wrong start date" in {
+      assert(executor.performCommand("/create_poll <Test> yes continuous 2018-99-99 10:11:12") == unknownCommand)
+    }
+    "not create with wrong end time" in {
+      assert(executor.performCommand("/create_poll <Test> yes continuous 2018-04-21 10:11:12 2018-04-21 99:99:99")
+        == unknownCommand)
+    }
+    "not create with wrong end date" in{
+      assert(executor.performCommand("/create_poll <Test> yes continuous 2018-04-21 10:11:12 2018-99-99 10:11:12")
+        == unknownCommand)
+    }
+    "is not active before definite start time" in {
+      val afterMin = getTimeInCurFormat(LocalDateTime.now().plusMinutes(1))
+      val id =getId("Test", s"yes continuous $afterMin")
+      assert(!PollsStore.polls(id).active)
+    }
+    "is active after definite start time" in {
+      val aftertime = getTimeInCurFormat(LocalDateTime.now().plusSeconds(1))
+      val id =getId("Test", s"yes continuous $aftertime")
+      assert(!PollsStore.polls(id).active)
+      Thread.sleep(1500)
+      executor.performCommand("/list")
+      assert(PollsStore.polls(id).active)
+    }
+    "is not active after finish time" in{
+      val time = getTimeInCurFormat(LocalDateTime.now())
+      val afterSec = getTimeInCurFormat(LocalDateTime.now().plusSeconds(2))
+      val id = getId("Test", s"yes continuous $time $afterSec")
+      executor.performCommand("/list")
+      assert(PollsStore.polls(id).active)
+      Thread.sleep(2200)
+      executor.performCommand("/list")
+      assert(!PollsStore.polls(id).active)
     }
     "start correctly" in {
       val id = getId("first")
