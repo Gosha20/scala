@@ -79,7 +79,7 @@ object ParserCommands {
       whitespaces ~> questionType <~ whitespaces,
       many(anyChar)).mapN(
       (name, questionType, variantsChars) => {
-        val variants = variantsChars.mkString.split("\n").drop(1).toSet
+        val variants = variantsChars.mkString.split("\n").drop(1).distinct
         ContextCommands.AddQuestion(name, questionType, variants)})
 
   val deleteQuestion:Parser[Command] =

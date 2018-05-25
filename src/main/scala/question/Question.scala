@@ -6,7 +6,7 @@ import scala.collection.immutable.HashMap
 
 case class Question(name:String,
                     questionType : QuestionTypes,
-                    answers : Set[String],
+                    answers : Array[String],
                     anonymous : Boolean,
                     votes : HashMap[String,Int] = HashMap.empty ,
                     users : Set[User] = Set[User](),

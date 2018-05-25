@@ -34,7 +34,7 @@ object ContextCommands {
     override def perform(userHandler: UserHandler): String = PollsStore.polls(PollsStore.userWorkWithPoll(userHandler.user).pollId).toString
     }
 
-  case class AddQuestion(name:String, questionType: QuestionTypes, answers:Set[String]) extends Command {
+  case class AddQuestion(name:String, questionType: QuestionTypes, answers:Array[String]) extends Command {
     override def perform(userHandler: UserHandler): String = {
       PollsStore.checkTime()
       val poll = PollsStore.userWorkWithPoll.getOrElse(userHandler.user,
@@ -89,9 +89,9 @@ object ContextCommands {
             case QuestionTypes.Multi => {
               val answerParsed = answer.split(' ')
               if (answerParsed.distinct.length == answerParsed.length) {
-                answerParsed.foreach(answer =>
+                answerParsed.foreach(answerId =>
                   {
-                    val answer = getAnswerById(question, answer)
+                    val answer = getAnswerById(question, answerId)
                     if (answer == "")
                       return "wrong answer id"
                   })
@@ -113,7 +113,7 @@ object ContextCommands {
     PollsStore.pollQuestion += (poll -> (PollsStore.pollQuestion(poll) + (questionId -> newQuestion)))
     "Answer successfully added!"
   }
-    def getAnswerById(question:Question, idInstr: String) : String = {
+    def getAnswerById(question : Question, idInstr: String) : String = {
       val id = Try(idInstr.toInt).toOption
       if (id.isDefined && question.answers.size >= id.get && 1 <= id.get )
         question.answers(id.get - 1)
