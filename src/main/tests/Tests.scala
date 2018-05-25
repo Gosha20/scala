@@ -3,7 +3,7 @@ import org.scalatest.BeforeAndAfter
 import atto._
 import Atto._
 import my_parser.ParserCommands
-import poll_store.{DateTime, Poll, PollsStore}
+import poll_store.{ Poll, PollsStore}
 import java.time.LocalDateTime
 import user_handler._
 
@@ -17,7 +17,8 @@ class Tests extends WordSpec with BeforeAndAfter {
   private val user = User("Name")
   private val executor = UserHandler(user)
 
-  private def getId(string: String): Int = getIdInString(executor.performCommand(s"/create_poll $string"))
+  private def getId(name: String, args:String = ""): Int =
+    getIdInString(executor.performCommand(s"/create_poll <$name> $args"))
 
   private def getIdInString(string: String): Int =
     string.filter(_.isDigit).toInt
@@ -34,10 +35,11 @@ class Tests extends WordSpec with BeforeAndAfter {
       assert(executor.performCommand("/crtpoll qwe") == unknownCommand)
       assert(executor.performCommand("/lst") == unknownCommand)
       assert(executor.performCommand("/create poll lmao") == unknownCommand)
+      assert(executor.performCommand("/create_poll test") == unknownCommand)
     }
   }
   "input correct command" in {
-    assert(executor.performCommand("/create_poll MyPool").toString != unknownCommand)
+    assert(executor.performCommand("/create_poll <MyPool>").toString != unknownCommand)
     assert(executor.performCommand("/list") != unknownCommand)
   }
 
@@ -62,38 +64,38 @@ class Tests extends WordSpec with BeforeAndAfter {
       assert(id2.toInt >= 0)
     }
     "simply create" in {
-      val repr = ParserCommands.getCommand("/create_poll Simply").get
-      assert(repr == SimpleCommand.CreatePoll(pollTitle = "Simply", isAnon = true, resShown = false,
+      val repr = ParserCommands.getCommand("/create_poll <Simply>").get
+      assert(repr == SimpleCommand.CreatePoll(pollTitle = "Simply", isAnon = true, resShown = "continuous",
         startTime = null, endTime = null))
     }
     "create with non-anon flag" in {
-      val id = getId("Simply no")
+      val id = getId("Simply", "no")
       val p = PollsStore.polls(id)
-      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = false, resShown = false,
+      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = false, resShown = "continuous",
         startTime = null, endTime = null, pollId = id.toInt, creator = user))
     }
     "create with non-anon flag and afterstop results visibility flag" in {
-      val id = getId("Simply no afterstop")
+      val id = getId("Simply", "no afterstop")
       val p = PollsStore.polls(id)
-      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = false, resShown = true,
+      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = false, resShown = "afterstop",
         startTime = null, endTime = null, pollId = id, creator = user))
     }
     "create with anon and continuous flags" in {
-      val id = getId("Simply yes continuous")
+      val id = getId("Simply", "yes continuous")
       val p = PollsStore.polls(id)
-      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = true, resShown = false,
+      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = true, resShown = "continuous",
         startTime = null, endTime = null, pollId = id, creator = user))
     }
     "create with start time" in {
-      val id = getId("Simply yes continuous 2018-04-21 10:21:31")
+      val id = getId("Simply", "yes continuous 2018-04-21 10:21:31")
       val p = PollsStore.polls(id)
-      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = true, resShown = false,
+      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = true, resShown = "continuous",
         startTime = LocalDateTime.of(2018, 4, 21, 10, 21, 31), endTime = null, pollId = id, creator = user))
     }
     "create with end time" in {
-      val id = getId("Simply yes continuous 2018-04-21 10:21:31 2019-04-21 10:21:31")
+      val id = getId("Simply", "yes continuous 2018-04-21 10:21:31 2019-04-21 10:21:31")
       val p = PollsStore.polls(id)
-      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = true, resShown = false,
+      assert(p == poll_store.Poll(pollTitle = "Simply", isAnon = true, resShown = "continuous",
         startTime = LocalDateTime.of(2018, 4, 21, 10, 21, 31), endTime = LocalDateTime.of(2019, 4, 21, 10, 21, 31),
         pollId = id, creator = user))
     }
@@ -130,13 +132,13 @@ class Tests extends WordSpec with BeforeAndAfter {
       assert(executor.performCommand("/start_poll 1") == noPollWithID)
     }
     "have nice list with several polls" in {
-      executor.performCommand("/create_poll f")
-      executor.performCommand("/create_poll g")
+      executor.performCommand("/create_poll <f>")
+      executor.performCommand("/create_poll <g>")
       assert(executor.performCommand("/list") == "Polls:\n" +
         """
            |Poll Title: f
            |Is Anonymous: true
-           |Results visibility: false
+           |Results visibility: continuous
            |Poll Start Time: null
            |Poll End Time: null
            |Poll Id: 0
@@ -145,7 +147,7 @@ class Tests extends WordSpec with BeforeAndAfter {
         """
            |Poll Title: g
            |Is Anonymous: true
-           |Results visibility: false
+           |Results visibility: continuous
            |Poll Start Time: null
            |Poll End Time: null
            |Poll Id: 1

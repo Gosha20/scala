@@ -7,7 +7,7 @@ import scala.collection.mutable
 
 final case class Poll(pollTitle : String,
                 isAnon : Boolean,
-                resShown: Boolean,
+                resShown: String,
                 startTime: LocalDateTime,
                 endTime: LocalDateTime,
                 pollId : Int,
@@ -28,7 +28,6 @@ final case class Poll(pollTitle : String,
     }
   }
 
-//TODO resShow -> after or cont, not tru false
   override def toString: String = {
     s"""
 |Poll Title: $pollTitle

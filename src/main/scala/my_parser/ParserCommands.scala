@@ -19,6 +19,9 @@ object ParserCommands {
   def booleanString(_false : String, _true : String, empty : Boolean = true):Parser[Boolean]=
     stringCI(_true).map(_ => true) | stringCI(_false).map(_ => false) | endOfInput.map(_=> empty)
 
+  def resultShownWord(first : String, second: String): Parser[String] =
+    string(first)| string(second)|endOfInput.map(_=> "continuous")
+
   val whitespaces : Parser[Unit] =
     takeWhile(c => c == ' ').void
 
@@ -40,7 +43,7 @@ object ParserCommands {
   val createPoll: Parser[Command] =
     (stringCI("/create_poll ") ~> wordIntoBark <~ string(">"),
       whitespaces ~> booleanString("no", "yes") <~ whitespaces,
-      booleanString("afterstop", "continuous", false ) <~ whitespaces,
+      resultShownWord("afterstop", "continuous") <~ whitespaces,
       dateTime <~ whitespaces,
       dateTime).mapN(SimpleCommand.CreatePoll.apply)
 
