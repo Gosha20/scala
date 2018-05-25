@@ -21,10 +21,10 @@ final case class Poll(pollTitle : String,
        if(nowtime.isAfter(startTime)) {
          if (endTime == null)
            PollsStore.update(this.copy(active = true))
-         if(nowtime.isBefore(endTime))
-           PollsStore.update(this.copy(active = true))
-       }else
-        {PollsStore.update(this.copy(active = false))}
+         else {
+            PollsStore.update(this.copy(active = nowtime.isBefore(endTime)))
+         }
+       }
     }
   }
 

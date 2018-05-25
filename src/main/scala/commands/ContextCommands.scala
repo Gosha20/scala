@@ -115,7 +115,7 @@ object ContextCommands {
   }
     def getAnswerById(question : Question, idInstr: String) : String = {
       val id = Try(idInstr.toInt).toOption
-      if (id.isDefined && question.answers.size >= id.get && 1 <= id.get )
+      if (id.isDefined && question.answers.length >= id.get && 1 <= id.get )
         question.answers(id.get - 1)
       ""
     }
