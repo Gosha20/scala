@@ -16,9 +16,13 @@ class Tests extends WordSpec with BeforeAndAfter {
 
   private val user = User("Name")
   private val executor = UserHandler(user)
+  private val executor2 = UserHandler(User("Name2"))
 
   private def getId(name: String, args:String = ""): Int =
     getIdInString(executor.performCommand(s"/create_poll <$name> $args"))
+
+  private def getQuestionId(name: String, args:String = ""): Int =
+    getIdInString(executor.performCommand(s"/add_question <$name> $args"))
 
   private def getIdInString(string: String): Int =
     string.filter(_.isDigit).toInt
@@ -202,6 +206,21 @@ class Tests extends WordSpec with BeforeAndAfter {
     }
     "have nice list with zero polls" in {
       assert(executor.performCommand("/list") == "Polls:\n")
+    }
+    "get results with multi question" in {
+      val id = getId("Name")
+      executor.performCommand(s"/begin $id")
+      val questionId = getQuestionId("qwa qwa", "multi\nfirst\nsecond\nthird")
+      executor.performCommand("/end")
+      executor.performCommand(s"/start_poll $id")
+      executor.performCommand(s"/begin $id")
+      println("1")
+      executor.performCommand(s"/answer $questionId <first, second>")
+      println("2")
+      executor.performCommand("/end")
+      executor2.performCommand(s"/begin $id")
+      executor2.performCommand(s"/answer $questionId <first>")
+      assert(executor2.performCommand("/result") =="")
     }
   }
 }
