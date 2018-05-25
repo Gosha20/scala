@@ -7,7 +7,7 @@ import scala.collection.mutable
 
 final case class Poll(pollTitle : String,
                 isAnon : Boolean,
-                resShown: Boolean,
+                resShown: String,
                 startTime: LocalDateTime,
                 endTime: LocalDateTime,
                 pollId : Int,
@@ -15,20 +15,20 @@ final case class Poll(pollTitle : String,
                 active: Boolean = false) {
 
 //TODO pls GOD do smf with this shit
+  //now it works, but still looks complicated, hasn't figured out how to write clearly
   def checkTime() : Unit = {
     val nowtime = LocalDateTime.now()
     if (startTime != null){
-       if(nowtime.isAfter(startTime)) {
-         if (endTime == null)
-           PollsStore.update(this.copy(active = true))
-         else {
-            PollsStore.update(this.copy(active = nowtime.isBefore(endTime)))
-         }
-       }
+      if(nowtime.isAfter(startTime)) {
+        if (endTime == null)
+          PollsStore.update(this.copy(active = true))
+        else {
+          PollsStore.update(this.copy(active = nowtime.isBefore(endTime)))
+        }
+      }
     }
   }
 
-//TODO resShow -> after or cont, not tru false
   override def toString: String = {
     s"""
 |Poll Title: $pollTitle

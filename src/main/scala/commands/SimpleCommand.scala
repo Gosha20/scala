@@ -8,7 +8,7 @@ import user_handler.UserHandler
 object SimpleCommand {
   case class CreatePoll (pollTitle : String,
                        isAnon : Boolean,
-                       resShown : Boolean,
+                       resShown : String,
                        startTime: LocalDateTime,
                        endTime: LocalDateTime) extends Command {
     override def perform(userHandler: UserHandler): String = {
@@ -72,7 +72,7 @@ object SimpleCommand {
       PollsStore.checkTime()
       val poll = PollsStore.polls.getOrElse(id, return s"There is no poll with that ID")
 
-      if (poll.resShown)
+      if (poll.resShown == "continuous")
         return poll.getResult
 
       else{
