@@ -12,7 +12,7 @@ object Main {
     val bot = new EchoBot(token)
     bot.run()
 //      val userh = user_handler.UserHandler(User("Georgy"))
-//    userh.performCommand("/create_poll <test 1> yes continuous")
+//    userh.performCommand("/create_poll <test 1>")
 //    userh.performCommand("/begin 0")
 //    userh.performCommand("/add_question <gogo gogo??> multi\nyes\nda\nmb")
 //    userh.performCommand("/add_question <gogo gogo2??> choice\nyes\nda\nmb")

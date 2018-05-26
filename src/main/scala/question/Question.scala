@@ -23,13 +23,10 @@ case class Question(questionId:Int,
       }
       this.copy(votes = newvotes, userVote = newuservote, users = newUsers)
   }
-  //TODO полная шляпа какая-то, нетривиально с votes Amount, сделать более читабельно. будет
-  // ошибка при вопросе типа мулти
-
 
   override def toString: String = {
     val variants = answers.mkString(";")
-    val votesCount = users.size // wtf?
+    val votesCount = users.size
     val variantVotesSet =
       for(variant <- votes.keys)
         yield s"'$variant' variant votes: " + votes(variant).toString +" " +userVote.getOrElse(variant,"").toString

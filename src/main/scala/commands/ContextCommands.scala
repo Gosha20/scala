@@ -33,8 +33,7 @@ object ContextCommands {
   case class View() extends Command {
     override def perform(userHandler: UserHandler): String = {
       val poll = PollsStore.userWorkWithPoll.getOrElse(userHandler.user, return "need be in contex mode")
-      val questions = PollsStore.pollQuestion(poll).values
-
+      val questions = PollsStore.pollQuestion.getOrElse(poll, HashMap[Int, Question]()).values
       poll.toString + "\n" + questions.mkString("\n")
     }
   }

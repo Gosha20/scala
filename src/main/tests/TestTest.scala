@@ -1,18 +1,16 @@
+//package tests
 import org.scalatest.WordSpec
 import org.scalatest.BeforeAndAfter
 import atto._
-import Atto._
 import my_parser.ParserCommands
 import poll_store.{ Poll, PollsStore}
 import java.time.LocalDateTime
 import user_handler._
 
 import commands._
-
-import scala.StringContext.InvalidEscapeException
 import scala.collection.immutable.HashMap
 
-class Tests extends WordSpec with BeforeAndAfter {
+class TestTest extends WordSpec with BeforeAndAfter {
 
   private val user = User("Name")
   private val executor = UserHandler(user)
@@ -207,21 +205,21 @@ class Tests extends WordSpec with BeforeAndAfter {
     "have nice list with zero polls" in {
       assert(executor.performCommand("/list") == "Polls:\n")
     }
-    "get results with multi question" in {
-      val id = getId("Name")
-      executor.performCommand(s"/begin $id")
-      val questionId = getQuestionId("qwa qwa", "multi\nfirst\nsecond\nthird")
-      executor.performCommand("/end")
-      executor.performCommand(s"/start_poll $id")
-      executor.performCommand(s"/begin $id")
-      println("1")
-      executor.performCommand(s"/answer $questionId <first second>")
-      println("2")
-      executor.performCommand("/end")
-      executor2.performCommand(s"/begin $id")
-      executor2.performCommand(s"/answer $questionId <first>")
-      assert(executor2.performCommand("/result") =="")
-    }
+//    "get results with multi question" in {
+//      val id = getId("Name")
+//      executor.performCommand(s"/begin $id")
+//      val questionId = getQuestionId("qwa qwa", "multi\nfirst\nsecond\nthird")
+//      executor.performCommand("/end")
+//      executor.performCommand(s"/start_poll $id")
+//      executor.performCommand(s"/begin $id")
+//      println("1")
+//      executor.performCommand(s"/answer $questionId <first second>")
+//      println("2")
+//      executor.performCommand("/end")
+//      executor2.performCommand(s"/begin $id")
+//      executor2.performCommand(s"/answer $questionId <first>")
+//      assert(executor2.performCommand("/result") =="")
+//    }
   }
 }
 
