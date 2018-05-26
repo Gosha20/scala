@@ -4,13 +4,14 @@ import question.QuestionTypes.QuestionTypes
 import user_handler.User
 import scala.collection.immutable.HashMap
 
-case class Question(name:String,
+case class Question(questionId:Int,
+                    name:String,
                     questionType : QuestionTypes,
                     answers : Array[String],
                     anonymous : Boolean,
                     votes : HashMap[String,Int] = HashMap.empty ,
                     users : Set[User] = Set[User](),
-                    userVote : HashMap[String, Set[User]] = HashMap.empty ) {
+                    userVote : HashMap[String, Set[User]] = HashMap.empty) {
 
   def addVote(user: User, answer: String): Question = {
       val newvotes = votes + (answer -> (votes.getOrElse(answer, 0) + 1))
@@ -30,7 +31,8 @@ case class Question(name:String,
     val variants = answers.mkString(";")
     val votesCount = users.size // wtf?
     val variantVotesSet =
-      for(variant <- votes.keys) yield s"'$variant' variant votes: "+votes(variant).toString
+      for(variant <- votes.keys)
+        yield s"'$variant' variant votes: " + votes(variant).toString +" " +userVote.getOrElse(variant,"").toString
     val variantVotes = variantVotesSet.mkString("\n")
     val participants = if (anonymous){
       "\nParticipants: Anonymous poll"
@@ -38,6 +40,7 @@ case class Question(name:String,
       "\nParticipants:" + users.mkString(",")
     }
     s"""
+       |QuestionId: $questionId
        |Question: $name
        |Variants: $variants
        |Question Type: $questionType

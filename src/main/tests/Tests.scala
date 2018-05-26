@@ -215,7 +215,7 @@ class Tests extends WordSpec with BeforeAndAfter {
       executor.performCommand(s"/start_poll $id")
       executor.performCommand(s"/begin $id")
       println("1")
-      executor.performCommand(s"/answer $questionId <first, second>")
+      executor.performCommand(s"/answer $questionId <first second>")
       println("2")
       executor.performCommand("/end")
       executor2.performCommand(s"/begin $id")

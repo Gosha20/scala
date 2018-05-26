@@ -31,8 +31,13 @@ object ContextCommands {
   }
 
   case class View() extends Command {
-    override def perform(userHandler: UserHandler): String = PollsStore.polls(PollsStore.userWorkWithPoll(userHandler.user).pollId).toString
+    override def perform(userHandler: UserHandler): String = {
+      val poll = PollsStore.userWorkWithPoll.getOrElse(userHandler.user, return "need be in contex mode")
+      val questions = PollsStore.pollQuestion(poll).values
+
+      poll.toString + "\n" + questions.mkString("\n")
     }
+  }
 
   case class AddQuestion(name:String, questionType: QuestionTypes, answers:Array[String]) extends Command {
     override def perform(userHandler: UserHandler): String = {
@@ -40,13 +45,13 @@ object ContextCommands {
       val poll = PollsStore.userWorkWithPoll.getOrElse(userHandler.user,
         return "This command works only in context mode. You should enter it first")
       if (poll.creator == userHandler.user && !poll.active){
-            val question = Question(name, questionType, answers, poll.isAnon)
             val pollQuestion = PollsStore.pollQuestion.getOrElse(poll,HashMap())
             val questionId = PollsStore.getMinId(pollQuestion)
+            val question = Question(questionId, name, questionType, answers, poll.isAnon)
             PollsStore.pollQuestion += (poll -> (pollQuestion + (questionId -> question)))
             s"Question added to Poll. Question Id - $questionId"
       }else
-        "You can't add question to this poll, you are not poll's creator"
+        "You can't add question to this poll, you are not poll's creator or poll is active"
     }
   }
 
@@ -63,7 +68,7 @@ object ContextCommands {
           }else{
             s"There is no question with id $idQuestion"}
         }else
-            "You can't delete the question, you are not poll's creator"
+            "You can't delete the question, you are not poll's creator or poll is active"
     }
 
   }
@@ -83,8 +88,9 @@ object ContextCommands {
             case QuestionTypes.Choice => {
               val answerById = getAnswerById(question, answer)
               if (answerById != "")
-                addAnswer(poll, userHandler.user, answer)
-              "wrong answer id"
+                addAnswer(poll, userHandler.user, answerById)
+              else
+                "wrong answer id"
             }
             case QuestionTypes.Multi => {
               val answerParsed = answer.split(' ')
@@ -95,9 +101,11 @@ object ContextCommands {
                     if (answer == "")
                       return "wrong answer id"
                   })
-                answerParsed.foreach(answer => addAnswer(poll, userHandler.user, answer) )
+                answerParsed.foreach(answer => addAnswer(poll, userHandler.user, getAnswerById(question, answer)))
+                "full ok"
               }
-              "you cant choice duplicate answer id"
+              else
+                "you cant choice duplicate answer id"
             }
             case QuestionTypes.Open => {
               addAnswer(poll, userHandler.user, answer)
@@ -116,7 +124,7 @@ object ContextCommands {
     def getAnswerById(question : Question, idInstr: String) : String = {
       val id = Try(idInstr.toInt).toOption
       if (id.isDefined && question.answers.length >= id.get && 1 <= id.get )
-        question.answers(id.get - 1)
+        return question.answers(id.get - 1)
       ""
     }
   }

@@ -14,8 +14,6 @@ final case class Poll(pollTitle : String,
                 creator : User,
                 active: Boolean = false) {
 
-//TODO pls GOD do smf with this shit
-  //now it works, but still looks complicated, hasn't figured out how to write clearly
   def checkTime() : Unit = {
     val nowtime = LocalDateTime.now()
     if (startTime != null){
